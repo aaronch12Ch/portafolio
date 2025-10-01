@@ -3,7 +3,6 @@ package com.miportafolio.controller;
 
 import com.miportafolio.model.Proyectos;
 import com.miportafolio.service.ProyectosService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
