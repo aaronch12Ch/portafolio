@@ -1,4 +1,4 @@
-FROM amazoncorretto:21-alpha-jdk
+FROM amazoncorretto:21-alpine-jdk
 
 COPY target/aaronch-0.0.1-SNAPSHOT.jar /api-v1.jar
 
