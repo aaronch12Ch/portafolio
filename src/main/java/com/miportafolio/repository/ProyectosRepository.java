@@ -1,5 +1,8 @@
 package com.miportafolio.repository;
 
-public interface ProyectosRepository {
+import com.miportafolio.model.Proyectos;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProyectosRepository extends JpaRepository<Proyectos,Long> {
 
 }
