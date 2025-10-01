@@ -1,0 +1,9 @@
+com\miportafolio\handler\GlobalExceptionHandler.class
+com\miportafolio\service\ProyectosService.class
+com\miportafolio\repository\ProyectosRepository.class
+com\miportafolio\AaronchApplication.class
+com\miportafolio\controller\ProyectosController.class
+com\miportafolio\exception\ResourceNotFoundException.class
+com\miportafolio\model\Proyectos.class
+com\miportafolio\dto\ProyectosDTO.class
+com\miportafolio\security\SecurityConfig.class
