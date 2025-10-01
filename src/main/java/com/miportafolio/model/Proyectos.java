@@ -15,8 +15,8 @@ public class Proyectos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProyecto;
 
-    @Column(length = 8, nullable = false)
-    private String proyecto;
+    @Column(length = 20, nullable = false)
+    private String nombreProyecto;
 
     @Column(length = 20, nullable = false)
     private String url;

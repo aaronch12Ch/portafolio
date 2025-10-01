@@ -17,10 +17,37 @@ public class ProyectosService {
         return proyectosRepository.findAll();
     }
 
-    public Proyectos getProyectoById(Long id){
+    public Proyectos getProyectoByIdAdmin(Long id){
         Proyectos proyectos = proyectosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado: "+ id));
         return proyectos;
 
     }
+
+
+    public Proyectos createProyectoAdmin(Proyectos proyectos){
+        Proyectos saveProyectos = proyectosRepository.save(proyectos);
+        return saveProyectos;
+    }
+
+    public Proyectos deleteProyectoAmid(Long id){
+        Proyectos proyectoDelete = proyectosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado"+ id));
+        proyectosRepository.delete(proyectoDelete);
+        return proyectoDelete;
+    }
+
+    public Proyectos updateProyectoAdmin(Long id, Proyectos proyectos){
+        Proyectos proyectoExistente = proyectosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado"+ id));
+        proyectoExistente.setNombreProyecto(proyectos.getNombreProyecto());
+        proyectoExistente.setUrl(proyectos.getUrl());
+        proyectoExistente.setUrlImagen(proyectos.getUrlImagen());
+        proyectoExistente.setDisponibleProyecto(proyectos.isDisponibleProyecto());
+
+        Proyectos proyectoUpdate = proyectosRepository.save(proyectoExistente);
+        return proyectoUpdate;
+
+    }
+
 }
