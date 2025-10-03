@@ -29,7 +29,6 @@ public class ProyectosDTO {
     @Size(min = 8, max = 500, message = "La descripcion debe tener entre 4 y 500 caracteres")
     private String descripcionProyecto;
 
-    @NotNull(message = "La disponibilidad es obligatoria")
-    private boolean disponibleProyecto;
+
 
 }
