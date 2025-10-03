@@ -44,7 +44,7 @@ public class ProyectosService {
         proyectoExistente.setUrl(proyectos.getUrl());
         proyectoExistente.setUrlImagen(proyectos.getUrlImagen());
         proyectoExistente.setDisponibleProyecto(proyectos.isDisponibleProyecto());
-
+        proyectoExistente.setDescripcionProyecto(proyectos.getDescripcionProyecto());
         Proyectos proyectoUpdate = proyectosRepository.save(proyectoExistente);
         return proyectoUpdate;
 

@@ -25,7 +25,7 @@ public class Proyectos {
     @Column(length = 100, nullable = false)
     private String urlImagen;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String descripcionProyecto;
 
     @Column(nullable = false)
