@@ -18,11 +18,11 @@ public class ProyectosDTO {
     private String nombreProyecto;
 
     @NotBlank(message = "El Url no puede estar vacío")
-    @Size(min = 4, max = 20, message = "El url debe tener entre 4 y 20 caracteres")
+    @Size(min = 4, max = 255, message = "El url debe tener entre 4 y 20 caracteres")
     private String url;
 
     @NotBlank(message = "El Url Imagen no puede estar vacío")
-    @Size(min = 4, max = 20, message = "El Url Imagen debe tener entre 4 y 20 caracteres")
+    @Size(min = 4, max = 255, message = "El Url Imagen debe tener entre 4 y 20 caracteres")
     private String urlImagen;
 
     @NotBlank(message = "La descripcion no puede estar vacío")

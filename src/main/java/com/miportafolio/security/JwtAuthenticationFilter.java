@@ -16,6 +16,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+// NUEVAS IMPORTACIONES AÑADIDAS
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+// FIN NUEVAS IMPORTACIONES
 
 @Component
 @RequiredArgsConstructor
@@ -44,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 2. Extraer el token y el email del usuario
-        //jwt = authHeader.substring(7);
         jwt = authHeader.substring(7).trim();
         userEmail = jwtService.extractUsername(jwt);
 
@@ -57,12 +62,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 4. Validar el token contra el usuario
             if (jwtService.isTokenValid(jwt, userDetails)) {
 
+                // === INICIO DE LAS MODIFICACIONES CLAVE ===
+
+                // a. Obtener la cadena de roles del token (ej: "ADMIN,JEFE")
+                String rolesString = jwtService.extractRoles(jwt);
+
+                // b. Dividir la cadena por comas y crear la colección de autoridades
+                List<SimpleGrantedAuthority> authorities = Arrays.stream(rolesString.split(","))
+                        .map(String::trim)
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
                 // Si el token es válido, crear un objeto de autenticación
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
-                        userDetails.getAuthorities()
+                        authorities // <--- ¡AHORA USA LA LISTA DE AUTORIDADES DEL TOKEN!
                 );
+
+                // === FIN DE LAS MODIFICACIONES CLAVE ===
 
                 // Asignar detalles de la petición (IP, sesión)
                 authToken.setDetails(

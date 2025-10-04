@@ -70,6 +70,10 @@ public class JwtService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
+    public String extractRoles(String token) {
+        // La clave 'roles' debe coincidir con la clave que usaste en generarToken()
+        return extractClaim(token, claims -> claims.get("roles", String.class));
+    }
     /**
      * Extrae el nombre de usuario (subject) del token.
      * @param token Token JWT.

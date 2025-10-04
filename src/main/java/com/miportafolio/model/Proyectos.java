@@ -19,10 +19,10 @@ public class                Proyectos {
     @Column(length = 20, nullable = false)
     private String nombreProyecto;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 255, nullable = false)
     private String url;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 255, nullable = false)
     private String urlImagen;
 
     @Column(length = 500, nullable = false)
