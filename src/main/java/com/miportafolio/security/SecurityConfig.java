@@ -80,7 +80,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
 
                         // 1. REGLA ESPECÍFICA para la gestión ADMIN de proyectos
-                        .requestMatchers("/api/proyectos/admin/**").hasAuthority("ADMIN") // <-- ¡AGREGA ESTA LÍNEA!
+                        .requestMatchers("/api/proyectos/admin/**").authenticated()  // <-- ¡AGREGA ESTA LÍNEA!
 
                         .requestMatchers(HttpMethod.GET, "/api/proyectos/todos").permitAll()
                         // 2. Ruta de administración general
