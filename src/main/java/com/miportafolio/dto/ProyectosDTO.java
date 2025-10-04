@@ -30,5 +30,7 @@ public class ProyectosDTO {
     private String descripcionProyecto;
 
 
+    @NotNull(message = "La disponibilidad es obligatoria")
+    private boolean disponibleProyecto;
 
 }

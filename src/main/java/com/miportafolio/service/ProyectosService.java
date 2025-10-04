@@ -60,7 +60,7 @@ public class ProyectosService {
 
     private ProyectosDTO convertToDto(Proyectos proyectos) {
         // Mapea la entidad a un DTO
-        return new ProyectosDTO(proyectos.getNombreProyecto(), proyectos.getUrl(),proyectos.getUrlImagen(),proyectos.getDescripcionProyecto());
+        return new ProyectosDTO(proyectos.getNombreProyecto(), proyectos.getUrl(),proyectos.getUrlImagen(),proyectos.getDescripcionProyecto(), proyectos.isDisponibleProyecto());
     }
     private Proyectos convertToEntity(ProyectosDTO carroDTO) {
         // Mapea el DTO a una entidad
