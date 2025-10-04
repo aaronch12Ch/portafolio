@@ -27,7 +27,7 @@ RUN mvn clean package -DskipTests
 # ETAPA 2: RUNTIME (Ejecución)
 # Utiliza una imagen más pequeña (solo el JRE) para ejecutar la aplicación.
 # =======================================================
-FROM amazoncorretto:21-jre-alpine
+FROM amazoncorretto:21-alpine-jdk
 WORKDIR /app
 
 # Copia el archivo JAR compilado desde la etapa 'build'.
