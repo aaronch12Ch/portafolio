@@ -117,7 +117,7 @@ public class ProyectosService {
 
     private ProyectosDTO convertToDto(Proyectos proyectos) {
         // Mapea la entidad a un DTO
-        return new ProyectosDTO(proyectos.getNombreProyecto(), proyectos.getUrl(),proyectos.getUrlImagen(),proyectos.getDescripcionProyecto(), proyectos.isDisponibleProyecto());
+        return new ProyectosDTO(proyectos.getNombreProyecto(), proyectos.getUrl(),proyectos.getUrlImagen(),proyectos.getDescripcionProyecto(),proyectos.getS3VideoKey(), proyectos.isDisponibleProyecto());
     }
     private Proyectos convertToEntity(ProyectosDTO carroDTO) {
         // Mapea el DTO a una entidad
@@ -127,6 +127,7 @@ public class ProyectosService {
         proyecto.setUrl(proyecto.getUrl());
         proyecto.setUrlImagen(proyecto.getUrlImagen());
         proyecto.setDisponibleProyecto(proyecto.isDisponibleProyecto());
+        proyecto.setS3VideoKey(proyecto.getS3VideoKey());
         return proyecto;
     }
 }
