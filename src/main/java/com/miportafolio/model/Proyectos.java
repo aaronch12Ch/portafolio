@@ -30,4 +30,7 @@ public class                Proyectos {
 
     @Column(nullable = false)
     private boolean disponibleProyecto;
+
+    @Column(columnDefinition = "TEXT")
+    private String s3VideoKey;
 }
