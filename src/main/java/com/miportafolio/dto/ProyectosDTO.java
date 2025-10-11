@@ -29,9 +29,7 @@ public class ProyectosDTO {
     @Size(min = 8, max = 500, message = "La descripcion debe tener entre 4 y 500 caracteres")
     private String descripcionProyecto;
 
-    @NotBlank(message = "La clave S3 del video es obligatoria")
-    @Size(min = 4, max = 255, message = "La clave S3 del video debe tener entre 4 y 255 caracteres")
-    private String s3VideoKey;
+    private String s3VideoKey; // Se elimina la validación que causaba el 400.
 
     @NotNull(message = "La disponibilidad es obligatoria")
     private boolean disponibleProyecto;
