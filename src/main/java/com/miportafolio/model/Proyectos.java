@@ -1,5 +1,6 @@
 package com.miportafolio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Max;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Proyectos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
