@@ -21,8 +21,9 @@ import java.util.List;
 @RequestMapping("/api/proyectos")
 @RequiredArgsConstructor
 public class ProyectosController {
-    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProyectosController.class);
     private final ProyectosService proyectosService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/todos")
     public List<ProyectosDTO> getAllproyectosPublicos(){return proyectosService.getAllProyectosPublic();}
@@ -54,14 +55,13 @@ public class ProyectosController {
     @PostMapping(value = "/admin", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'JEFE')")
     public ResponseEntity<?> createProyecto(
-            @RequestPart("proyecto") String proyectoJson,
+            @RequestPart("proyecto") String proyectoJson, // Cambiar a String
             @RequestPart(value = "video", required = false) MultipartFile videoFile) {
 
         try {
             logger.info("POST /api/proyectos/admin - Recibiendo JSON: {}", proyectoJson);
 
             // Convertir JSON a objeto Proyectos
-            ObjectMapper objectMapper = new ObjectMapper();
             Proyectos proyecto = objectMapper.readValue(proyectoJson, Proyectos.class);
 
             logger.info("Proyecto convertido: {}", proyecto.getNombreProyecto());
@@ -91,14 +91,13 @@ public class ProyectosController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'JEFE')")
     public ResponseEntity<?> updateProyecto(
             @PathVariable Long id,
-            @RequestPart("proyecto") String proyectoJson,
+            @RequestPart("proyecto") String proyectoJson, // Cambiar a String
             @RequestPart(value = "video", required = false) MultipartFile videoFile) {
 
         try {
             logger.info("PUT /api/proyectos/admin/{} - Recibiendo JSON: {}", id, proyectoJson);
 
             // Convertir JSON a objeto Proyectos
-            ObjectMapper objectMapper = new ObjectMapper();
             Proyectos proyecto = objectMapper.readValue(proyectoJson, Proyectos.class);
 
             logger.info("Proyecto convertido: {}", proyecto.getNombreProyecto());
