@@ -128,6 +128,7 @@ public class ProyectosService {
         proyecto.setUrlImagen(proyecto.getUrlImagen());
         proyecto.setDisponibleProyecto(proyecto.isDisponibleProyecto());
         proyecto.setS3VideoKey(proyecto.getS3VideoKey());
+        proyecto.setDescripcionProyecto(proyecto.getDescripcionProyecto());
         return proyecto;
     }
 }
