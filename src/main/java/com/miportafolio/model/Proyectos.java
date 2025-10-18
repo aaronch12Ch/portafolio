@@ -18,7 +18,7 @@ public class Proyectos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProyecto;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 255, nullable = false)
     private String nombreProyecto;
 
     @Column(length = 255, nullable = false)
@@ -30,7 +30,7 @@ public class Proyectos {
     @Column(length = 500, nullable = false)
     private String descripcionProyecto;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "BOOLEAN DEFAULT true")
     private boolean disponibleProyecto;
 
     @Column(columnDefinition = "TEXT")
