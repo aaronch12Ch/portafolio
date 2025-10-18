@@ -1,6 +1,8 @@
 package com.miportafolio.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miportafolio.dto.ProyectosDTO;
 import com.miportafolio.model.Proyectos;
 import com.miportafolio.service.ProyectosService;
@@ -52,20 +54,28 @@ public class ProyectosController {
     @PostMapping(value = "/admin", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'JEFE')")
     public ResponseEntity<?> createProyecto(
-            @RequestPart("proyecto") Proyectos proyecto,
+            @RequestPart("proyecto") String proyectoJson,
             @RequestPart(value = "video", required = false) MultipartFile videoFile) {
 
         try {
-            logger.info("POST /api/proyectos/admin - Creando proyecto: {}", proyecto.getNombreProyecto());
+            logger.info("POST /api/proyectos/admin - Recibiendo JSON: {}", proyectoJson);
+
+            // Convertir JSON a objeto Proyectos
+            ObjectMapper objectMapper = new ObjectMapper();
+            Proyectos proyecto = objectMapper.readValue(proyectoJson, Proyectos.class);
+
+            logger.info("Proyecto convertido: {}", proyecto.getNombreProyecto());
             logger.info("Video recibido: {}", videoFile != null ? videoFile.getOriginalFilename() : "ninguno");
-            logger.info("Tipo de contenido del video: {}", videoFile != null ? videoFile.getContentType() : "N/A");
-            logger.info("Tamaño del video: {} bytes", videoFile != null ? videoFile.getSize() : 0);
 
             Proyectos savedProyecto = proyectosService.createProyectoAdmin(proyecto, videoFile);
 
             logger.info("Proyecto creado exitosamente con ID: {}", savedProyecto.getIdProyecto());
             return ResponseEntity.status(HttpStatus.CREATED).body(savedProyecto);
 
+        } catch (JsonProcessingException e) {
+            logger.error("Error al procesar JSON: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error en el formato JSON: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("Validación fallida: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -81,11 +91,17 @@ public class ProyectosController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'JEFE')")
     public ResponseEntity<?> updateProyecto(
             @PathVariable Long id,
-            @RequestPart("proyecto") Proyectos proyecto,
+            @RequestPart("proyecto") String proyectoJson,
             @RequestPart(value = "video", required = false) MultipartFile videoFile) {
 
         try {
-            logger.info("PUT /api/proyectos/admin/{} - Actualizando proyecto", id);
+            logger.info("PUT /api/proyectos/admin/{} - Recibiendo JSON: {}", id, proyectoJson);
+
+            // Convertir JSON a objeto Proyectos
+            ObjectMapper objectMapper = new ObjectMapper();
+            Proyectos proyecto = objectMapper.readValue(proyectoJson, Proyectos.class);
+
+            logger.info("Proyecto convertido: {}", proyecto.getNombreProyecto());
             logger.info("Video recibido: {}", videoFile != null ? videoFile.getOriginalFilename() : "ninguno");
 
             Proyectos updatedProyecto = proyectosService.updateProyectoAdmin(id, proyecto, videoFile);
@@ -93,6 +109,10 @@ public class ProyectosController {
             logger.info("Proyecto actualizado exitosamente: {}", id);
             return ResponseEntity.ok(updatedProyecto);
 
+        } catch (JsonProcessingException e) {
+            logger.error("Error al procesar JSON: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error en el formato JSON: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("Validación fallida: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
