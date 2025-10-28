@@ -29,106 +29,98 @@ public class ProyectosService {
     }
 
     public Proyectos getProyectoByIdAdmin(Long id){
-        Proyectos proyectos = proyectosRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado: "+ id));
-        return proyectos;
-
+        return proyectosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado: " + id));
     }
 
+    // Crear proyecto SIN video
+    public Proyectos createProyectoAdmin(Proyectos proyectos) {
+        return proyectosRepository.save(proyectos);
+    }
 
-    /*public Proyectos createProyectoAdmin(Proyectos proyectos){
-        Proyectos saveProyectos = proyectosRepository.save(proyectos);
-        return saveProyectos;
-    }*/
-    public Proyectos createProyectoAdmin(Proyectos proyectos, MultipartFile videoFile) throws IOException {
+    // Actualizar proyecto SIN video
+    public Proyectos updateProyectoAdmin(Long id, Proyectos proyectos) {
+        Proyectos proyectoExistente = proyectosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado" + id));
 
-        // 1. Si se adjuntó un archivo, subirlo a S3
-        if (videoFile != null && !videoFile.isEmpty()) {
-            String s3Key = s3Service.uploadFile(videoFile);
-            proyectos.setS3VideoKey(s3Key); // Guardar la clave en la entidad
+        // Actualizar campos (sin tocar el s3VideoKey)
+        proyectoExistente.setNombreProyecto(proyectos.getNombreProyecto());
+        proyectoExistente.setUrl(proyectos.getUrl());
+        proyectoExistente.setUrlImagen(proyectos.getUrlImagen());
+        proyectoExistente.setDisponibleProyecto(proyectos.isDisponibleProyecto());
+        proyectoExistente.setDescripcionProyecto(proyectos.getDescripcionProyecto());
+
+        return proyectosRepository.save(proyectoExistente);
+    }
+
+    // Subir video a un proyecto existente
+    public Proyectos uploadVideoToProyecto(Long id, MultipartFile videoFile) throws IOException {
+        Proyectos proyecto = proyectosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado: " + id));
+
+        if (videoFile == null || videoFile.isEmpty()) {
+            throw new IllegalArgumentException("El archivo de video es requerido");
         }
 
-        // 2. Guardar el proyecto en la DB
-        Proyectos saveProyectos = proyectosRepository.save(proyectos);
-        return saveProyectos;
+        // Si ya tiene un video, eliminar el anterior de S3
+        if (proyecto.getS3VideoKey() != null && !proyecto.getS3VideoKey().isEmpty()) {
+            s3Service.deleteFile(proyecto.getS3VideoKey());
+        }
+
+        // Subir el nuevo video a S3
+        String s3Key = s3Service.uploadFile(videoFile);
+        proyecto.setS3VideoKey(s3Key);
+
+        return proyectosRepository.save(proyecto);
     }
 
-    /*public Proyectos deleteProyectoAmid(Long id){
-        Proyectos proyectoDelete = proyectosRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado"+ id));
-        proyectosRepository.delete(proyectoDelete);
-        return proyectoDelete;
-    }*/
+    // Eliminar video de un proyecto
+    public Proyectos deleteVideoFromProyecto(Long id) {
+        Proyectos proyecto = proyectosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado: " + id));
+
+        // Si tiene video en S3, eliminarlo
+        if (proyecto.getS3VideoKey() != null && !proyecto.getS3VideoKey().isEmpty()) {
+            s3Service.deleteFile(proyecto.getS3VideoKey());
+            proyecto.setS3VideoKey(null);
+        }
+
+        return proyectosRepository.save(proyecto);
+    }
+
+    // Eliminar proyecto completo
     public void deleteProyectoAmid(Long id){
         Proyectos proyectoDelete = proyectosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado" + id));
 
-        // 1. LÓGICA DE ELIMINACIÓN DE S3 (¡CRUCIAL!)
-        // Solo borra de S3 si tiene una clave asociada
+        // Eliminar video de S3 si existe
         if (proyectoDelete.getS3VideoKey() != null && !proyectoDelete.getS3VideoKey().isEmpty()) {
             s3Service.deleteFile(proyectoDelete.getS3VideoKey());
         }
 
-        // 2. Eliminar de la base de datos
+        // Eliminar de la base de datos
         proyectosRepository.delete(proyectoDelete);
     }
 
-    /*public Proyectos updateProyectoAdmin(Long id, Proyectos proyectos){
-        Proyectos proyectoExistente = proyectosRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado"+ id));
-        proyectoExistente.setNombreProyecto(proyectos.getNombreProyecto());
-        proyectoExistente.setUrl(proyectos.getUrl());
-        proyectoExistente.setUrlImagen(proyectos.getUrlImagen());
-        proyectoExistente.setDisponibleProyecto(proyectos.isDisponibleProyecto());
-        proyectoExistente.setDescripcionProyecto(proyectos.getDescripcionProyecto());
-        Proyectos proyectoUpdate = proyectosRepository.save(proyectoExistente);
-        return proyectoUpdate;
-
-    }*/
-    public Proyectos updateProyectoAdmin(Long id, Proyectos proyectos, MultipartFile videoFile) throws IOException {
-        Proyectos proyectoExistente = proyectosRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado" + id));
-
-        // 1. LÓGICA DEL VIDEO
-        if (videoFile != null && !videoFile.isEmpty()) {
-
-            // a. Eliminar el video antiguo de S3 (si existe)
-            if (proyectoExistente.getS3VideoKey() != null) {
-                s3Service.deleteFile(proyectoExistente.getS3VideoKey());
-            }
-
-            // b. Subir el nuevo video
-            String newS3Key = s3Service.uploadFile(videoFile);
-            proyectoExistente.setS3VideoKey(newS3Key);
-        }
-        // Nota: Si videoFile es null, se conserva el s3VideoKey existente.
-
-        // 2. Actualizar el resto de campos
-        proyectoExistente.setNombreProyecto(proyectos.getNombreProyecto());
-        proyectoExistente.setUrl(proyectos.getUrl());
-        proyectoExistente.setUrlImagen(proyectos.getUrlImagen());
-        proyectoExistente.setDisponibleProyecto(proyectos.isDisponibleProyecto());
-        proyectoExistente.setDescripcionProyecto(proyectos.getDescripcionProyecto());
-
-        // 3. Guardar en la DB
-        Proyectos proyectoUpdate = proyectosRepository.save(proyectoExistente);
-        return proyectoUpdate;
-    }
-
     private ProyectosDTO convertToDto(Proyectos proyectos) {
-        // Mapea la entidad a un DTO
-        return new ProyectosDTO(proyectos.getNombreProyecto(), proyectos.getUrl(),proyectos.getUrlImagen(),proyectos.getDescripcionProyecto(),proyectos.getS3VideoKey(), proyectos.isDisponibleProyecto());
+        return new ProyectosDTO(
+                proyectos.getNombreProyecto(),
+                proyectos.getUrl(),
+                proyectos.getUrlImagen(),
+                proyectos.getDescripcionProyecto(),
+                proyectos.getS3VideoKey(),
+                proyectos.isDisponibleProyecto()
+        );
     }
-    private Proyectos convertToEntity(ProyectosDTO carroDTO) {
-        // Mapea el DTO a una entidad
-        Proyectos proyecto = new Proyectos();
 
-        proyecto.setNombreProyecto(proyecto.getNombreProyecto());
-        proyecto.setUrl(proyecto.getUrl());
-        proyecto.setUrlImagen(proyecto.getUrlImagen());
-        proyecto.setDisponibleProyecto(proyecto.isDisponibleProyecto());
-        proyecto.setS3VideoKey(proyecto.getS3VideoKey());
-        proyecto.setDescripcionProyecto(proyecto.getDescripcionProyecto());
+    private Proyectos convertToEntity(ProyectosDTO proyectoDTO) {
+        Proyectos proyecto = new Proyectos();
+        proyecto.setNombreProyecto(proyectoDTO.getNombreProyecto());
+        proyecto.setUrl(proyectoDTO.getUrl());
+        proyecto.setUrlImagen(proyectoDTO.getUrlImagen());
+        proyecto.setDisponibleProyecto(proyectoDTO.isDisponibleProyecto());
+        proyecto.setS3VideoKey(proyectoDTO.getS3VideoKey());
+        proyecto.setDescripcionProyecto(proyectoDTO.getDescripcionProyecto());
         return proyecto;
     }
 }
