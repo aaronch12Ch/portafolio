@@ -14,12 +14,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
+
+
+
+
 @RestController
 @RequestMapping("/api/proyectos")
 @RequiredArgsConstructor
 public class ProyectosController {
     private static final Logger logger = LoggerFactory.getLogger(ProyectosController.class);
     private final ProyectosService proyectosService;
+
+
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
+    }
 
     @GetMapping("/todos")
     public List<ProyectosDTO> getAllproyectosPublicos(){
