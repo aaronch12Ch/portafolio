@@ -83,6 +83,9 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT: sin estado
                 )
                 .authorizeHttpRequests(authorize -> authorize
+
+                        .requestMatchers("/api/proyectos/health").permitAll()
+
                         // Rutas públicas de autenticación (Login y Registro)
                         .requestMatchers("/api/auth/**").permitAll()
 
