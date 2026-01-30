@@ -28,7 +28,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService; // Será UserDetailsServiceImpl
-
+    @Override
+protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getServletPath();
+    return path.equals("/api/proyectos/health");
+}
     /**
      * Lógica principal del filtro: intercepta la petición, extrae y valida el token.
      */
